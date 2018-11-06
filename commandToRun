@@ -1,0 +1,1 @@
+sudo mysql --verbose -pcs3319 < dgleasoscript1.txt  > dgleasooutputscript1.txt 2>&1

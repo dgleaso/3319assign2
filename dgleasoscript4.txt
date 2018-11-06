@@ -1,0 +1,29 @@
+USE dgleasoassign2db
+
+SELECT * FROM product;
+SELECT * FROM customer;
+SELECT * FROM deals;
+SELECT * FROM purchased;
+SELECT * FROM agent;
+
+CREATE VIEW view AS
+SELECT customer.FirstName, customer.LastName, product.Description, purchased.QuantityPurchased, purchased.QuantityPurchased * product.Cost AS TOTALCOST
+FROM purchased
+INNER JOIN customer ON purchased.CustomerId = customer.CustomerId
+INNER JOIN product ON purchased.ProductId = product.ProductId;
+
+SELECT * FROM view;
+
+SELECT * FROM view
+WHERE TOTALCOST > 100;
+
+DELETE FROM product
+WHERE ProductId = '00';
+
+SELECT * FROM product
+WHERE ProductId = '00';
+SELECT * FROM product;
+
+-- These rows were not deleted because there are entries in the deals table which rely on these rows meaning the primary key is in the deals table as a foriegn key
+DELETE FROM agent
+WHERE City = 'Springfield';

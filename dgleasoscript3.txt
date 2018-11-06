@@ -1,0 +1,99 @@
+USE dgleasoassign2db;
+
+-- Query 1
+SELECT Description FROM product;
+
+-- Query 2
+SELECT DISTINCT City FROM customer;
+
+-- Query 3
+SELECT * FROM agent ORDER BY City ASC;
+
+-- Query 4
+SELECT FirstName, LastName FROM customer WHERE City = 'Springfield';
+
+-- Query 5
+SELECT LastName
+FROM customer
+WHERE CustomerId IN (
+SELECT CustomerId
+From deals
+WHERE AgentId IN(
+SELECT AgentId
+FROM agent
+WHERE FirstName = 'Regis')
+);
+
+-- Query 6
+SELECT Description
+FROM product
+WHERE Description LIKE '%pad%' OR Description LIKE '%Pad%';
+
+
+
+-- Query 7
+SELECT customer.LastName, product.Description, purchased.QuantityPurchased
+FROM purchased
+INNER JOIN product ON product.ProductId = purchased.ProductId
+INNER JOIN customer ON customer.CustomerId = purchased.CustomerId;
+
+-- Query 8
+SELECT COUNT(CustomerId)
+FROM purchased
+WHERE CustomerId IN(
+SELECT CustomerId
+FROM customer
+WHERE FirstName = 'Homer');
+
+-- Query 9
+SELECT FirstName, LastName, COUNT(purchased.CustomerId)
+FROM customer
+INNER JOIN purchased ON customer.CustomerId = purchased.CustomerId;
+
+
+
+-- Query 10
+SELECT customer.FirstName, customer.LastName, T.CO
+FROM customer
+INNER JOIN (SELECT CustomerId, COUNT(CustomerId) as CO FROM purchased GROUP BY CustomerID) as T ON customer.CustomerId = T.CustomerId;
+
+-- Query 11
+SELECT Description, Quantity
+FROM product
+WHERE ProductId NOT IN (SELECT ProductId FROM purchased
+WHERE CustomerId IN (SELECT CustomerId FROM customer WHERE FirstName = 'Fred' AND LastName = 'Flintstone')
+);
+
+-- Query 12
+SELECT agent.FirstName, agent.LastName, customer.FirstName, customer.LastName
+FROM deals
+INNER JOIN customer ON deals.CustomerId = customer.CustomerId
+INNER JOIN agent ON deals.AgentId = agent.AgentId
+WHERE agent.City = customer.City;
+
+-- Query 13
+SELECT SUM(QuantityPurchased) FROM purchased
+WHERE ProductId = '78';
+
+-- Query 14
+SELECT Description
+FROM product
+WHERE ProductId IN (
+SELECT ProductId
+FROM purchased
+GROUP BY ProductId
+HAVING COUNT(*) > 3
+);
+
+-- Query 15
+SELECT FirstName, LastName
+FROM agent
+WHERE AgentId IN(
+SELECT AgentId
+FROM deals
+WHERE CustomerId IN(
+SELECT CustomerId
+FROM purchased
+WHERE ProductId = '78')
+);
+

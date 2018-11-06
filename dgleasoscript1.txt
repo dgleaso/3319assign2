@@ -1,0 +1,55 @@
+SHOW DATABASES;
+
+DROP DATABASE dgleasoassign2db;
+
+CREATE DATABASE dgleasoassign2db;
+
+USE dgleasoassign2db;
+
+GRANT USAGE ON *.* TO 'ta'@'localhost';
+DROP USER 'ta'@'localhost';
+CREATE USER 'ta'@'localhost' IDENTIFIED BY 'cs3319';
+GRANT ALL PRIVILEGES ON yourwesternuseridassign2db.* TO 'ta'@'localhost';
+FLUSH PRIVILEGES;
+
+SHOW TABLES;
+
+
+CREATE TABLE product(
+	ProductId varchar(2),
+	Description varchar(20),
+	Cost float,
+	Quantity int,
+	PRIMARY KEY (ProductId)
+);
+CREATE TABLE agent(
+	AgentId varchar(2),
+	FirstName varchar(30),
+	LastName varchar(30),
+	City varchar(15),
+	Commision float,
+	PRIMARY KEY (AgentId)
+);
+CREATE TABLE customer(
+	CustomerId varchar(2),
+	FirstName varchar(30),
+	LastName varchar(30),
+	City varchar(15),
+	PhoneNumber int,
+	PRIMARY KEY (CustomerId)
+);
+CREATE TABLE deals(
+	AgentId varchar(2),
+	CustomerId varchar(2),
+	FOREIGN KEY (AgentId) REFERENCES agent(AgentId),
+	FOREIGN KEY (CustomerId) REFERENCES customer(CustomerId)
+);
+CREATE TABLE purchased(
+	CustomerId varchar(2),
+	ProductId varchar(2),
+	QuantityPurchased int,
+	FOREIGN KEY (CustomerId) REFERENCES customer(CustomerId),
+	FOREIGN KEY (ProductId) REFERENCES product(ProductId)
+);
+
+SHOW TABLES;

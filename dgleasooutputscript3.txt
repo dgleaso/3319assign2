@@ -1,0 +1,175 @@
+Warning: Using a password on the command line interface can be insecure.
+--------------
+SELECT Description FROM product
+--------------
+
+Description
+Running Shoes
+Bike
+Socks
+Elbow pads
+Knee Pads
+Roller Blades
+Helmet
+--------------
+SELECT DISTINCT City FROM customer
+--------------
+
+City
+Bedrock
+Springfield
+Kypto
+Providence
+--------------
+SELECT * FROM agent ORDER BY City ASC
+--------------
+
+AgentId	FirstName	LastName	City	Commision
+33	David	Letterman	bedrock	100
+22	Courtney	Cox	New York	25
+66	Rosie	ODonnel	Ottawa	100
+11	Regis	Philbin	Springfield	33
+12	Rosie	Cox	Springfield	50
+99	Hugh	Grant	Springfield	16
+00	Daniel	Gleason	Toronto	100
+--------------
+SELECT FirstName, LastName FROM customer WHERE City = 'Springfield'
+--------------
+
+FirstName	LastName
+Monty	Burns
+Homer	Simson
+Sideshow	Bob
+--------------
+SELECT LastName
+FROM customer
+WHERE CustomerId IN (
+SELECT CustomerId
+From deals
+WHERE AgentId IN(
+SELECT AgentId
+FROM agent
+WHERE FirstName = 'Regis')
+)
+--------------
+
+LastName
+Rubble
+Flintstone
+--------------
+SELECT Description
+FROM product
+WHERE Description LIKE '%pad%' OR Description LIKE '%Pad%'
+--------------
+
+Description
+Elbow pads
+Knee Pads
+--------------
+SELECT customer.LastName, product.Description, purchased.QuantityPurchased
+FROM purchased
+INNER JOIN product ON product.ProductId = purchased.ProductId
+INNER JOIN customer ON customer.CustomerId = purchased.CustomerId
+--------------
+
+LastName	Description	QuantityPurchased
+Simson	Socks	14
+Bob	Socks	2
+Simson	Elbow pads	10
+Bob	Elbow pads	2
+Flintstone	Elbow pads	2
+Griffens	Elbow pads	19
+Bob	Knee Pads	4
+Flintstone	Knee Pads	2
+Simson	Helmet	20
+Bob	Helmet	1
+--------------
+SELECT COUNT(CustomerId)
+FROM purchased
+WHERE CustomerId IN(
+SELECT CustomerId
+FROM customer
+WHERE FirstName = 'Homer')
+--------------
+
+COUNT(CustomerId)
+3
+--------------
+SELECT FirstName, LastName, COUNT(purchased.CustomerId)
+FROM customer
+INNER JOIN purchased ON customer.CustomerId = purchased.CustomerId
+--------------
+
+FirstName	LastName	COUNT(purchased.CustomerId)
+Peter	Griffens	10
+--------------
+SELECT customer.FirstName, customer.LastName, T.CO
+FROM customer
+INNER JOIN (SELECT CustomerId, COUNT(CustomerId) as CO FROM purchased GROUP BY CustomerID) as T ON customer.CustomerId = T.CustomerId
+--------------
+
+FirstName	LastName	CO
+Peter	Griffens	1
+Fred	Flintstone	2
+Homer	Simson	3
+Sideshow	Bob	4
+--------------
+SELECT Description, Quantity
+FROM product
+WHERE ProductId NOT IN (SELECT ProductId FROM purchased
+WHERE CustomerId IN (SELECT CustomerId FROM customer WHERE FirstName = 'Fred' AND LastName = 'Flintstone')
+)
+--------------
+
+Description	Quantity
+Running Shoes	300
+Bike	200
+Socks	100
+Roller Blades	89
+Helmet	30
+--------------
+SELECT agent.FirstName, agent.LastName, customer.FirstName, customer.LastName
+FROM deals
+INNER JOIN customer ON deals.CustomerId = customer.CustomerId
+INNER JOIN agent ON deals.AgentId = agent.AgentId
+WHERE agent.City = customer.City
+--------------
+
+FirstName	LastName	FirstName	LastName
+Hugh	Grant	Homer	Simson
+--------------
+SELECT SUM(QuantityPurchased) FROM purchased
+WHERE ProductId = '78'
+--------------
+
+SUM(QuantityPurchased)
+6
+--------------
+SELECT Description
+FROM product
+WHERE ProductId IN (
+SELECT ProductId
+FROM purchased
+GROUP BY ProductId
+HAVING COUNT(*) > 3
+)
+--------------
+
+Description
+Elbow pads
+--------------
+SELECT FirstName, LastName
+FROM agent
+WHERE AgentId IN(
+SELECT AgentId
+FROM deals
+WHERE CustomerId IN(
+SELECT CustomerId
+FROM purchased
+WHERE ProductId = '78')
+)
+--------------
+
+FirstName	LastName
+Regis	Philbin
+Rosie	ODonnel
